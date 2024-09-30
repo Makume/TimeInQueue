@@ -22,5 +22,7 @@
 *.gitattributes linguist-detectable=true
 *.gitattributes linguist-documentation=false
 
-
+#
+# Ignore Image folder
+#
 Images/ export-ignore
