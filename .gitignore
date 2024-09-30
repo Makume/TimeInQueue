@@ -1,8 +1,6 @@
-(images)/
 # ignore all md
 *.md
 # ignore all gitignore
 *.gitignore
 # matches any files and directories with the name (images)
-(Images)
-`
+(Images)/
