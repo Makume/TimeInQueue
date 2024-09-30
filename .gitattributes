@@ -6,8 +6,7 @@
 # These files are text and should be normalized (Convert crlf => lf)
 *.gitattributes text
 .gitignore      text
-*.md            text
-.md             text
+*.md            text diff=markdown
 
 #
 # Exclude files from exporting
@@ -15,6 +14,7 @@
 
 .gitattributes  export-ignore
 .gitignore      export-ignore
+.md             export-ignore
 
 #
 # Enable syntax highlighting for files with `.gitattributes` extensions.
