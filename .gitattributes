@@ -6,7 +6,8 @@
 # These files are text and should be normalized (Convert crlf => lf)
 *.gitattributes text
 .gitignore      text
-*.md            text diff=markdown
+*.md            text
+.md             text
 
 #
 # Exclude files from exporting
