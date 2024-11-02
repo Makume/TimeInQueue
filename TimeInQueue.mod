@@ -6,16 +6,18 @@
 		<Files>
 			<File name="TimeInQueue.lua" />
 		</Files>
+		<SavedVariables>
+			<SavedVariable name="TimeInQueue.Scenarios" />
+		</SavedVariables>
 		<OnInitialize>
 			<CallFunction name="TimeInQueue.OnInitialize" />
 		</OnInitialize>
+		<OnUpdate>
+			<CallFunction name="TimeInQueue.OnUpdate" />
+		</OnUpdate>
 		<OnShutdown>  
 			<CallFunction name="TimeInQueue.Shutdown" /> 
 		</OnShutdown>  
-		<SavedVariables>
-			<SavedVariable name="TimeInQueue.Scenarios" global="false" />
-		</SavedVariables>
-		<VersionSettings gameVersion="1.4.8" windowsVersion="1.0" />  
 		<WARInfo>
 			<Categories>           
 				<Category name="COMBAT" />

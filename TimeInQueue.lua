@@ -2,42 +2,82 @@ if not TimeInQueue then
 	TimeInQueue = {}
 end
 
-TimeInQueue.Scenarios = {}
-
 local oldOnMouseoverScenarioQueue
 local GetGameTime, FormatClock = GetGameTime, TimeUtils.FormatClock
 
 function TimeInQueue.OnInitialize()
 	oldOnMouseoverScenarioQueue = EA_Window_OverheadMap.OnMouseoverScenarioQueue
 	EA_Window_OverheadMap.OnMouseoverScenarioQueue = TimeInQueue.OnMouseoverScenarioQueue
-	RegisterEventHandler(SystemData.Events.SCENARIO_INSTANCE_CANCEL, "TimeInQueue.OnJoinLeaveCancel")
-	RegisterEventHandler(SystemData.Events.INTERACT_LEAVE_SCENARIO_QUEUE, "TimeInQueue.OnJoinLeaveCancel")
-	RegisterEventHandler(SystemData.Events.SCENARIO_INSTANCE_JOIN_NOW, "TimeInQueue.OnJoinLeaveCancel")
-	RegisterEventHandler(SystemData.Events.INTERACT_GROUP_JOIN_SCENARIO_QUEUE, "TimeInQueue.OnJoinScenarioQueue")
-	RegisterEventHandler(SystemData.Events.INTERACT_JOIN_SCENARIO_QUEUE, "TimeInQueue.OnJoinScenarioQueue")
-	RegisterEventHandler(SystemData.Events.INTERACT_LEAVE_SCENARIO_QUEUE, "TimeInQueue.OnLeaveScenarioQueue")
+	RegisterEventHandler(SystemData.Events.SCENARIO_INSTANCE_CANCEL, "TimeInQueue.ScenarioInstanceCancel")
+	RegisterEventHandler(SystemData.Events.INTERACT_LEAVE_SCENARIO_QUEUE, "TimeInQueue.InteractLeaveScenarioQueue")
+	RegisterEventHandler(SystemData.Events.SCENARIO_INSTANCE_JOIN_NOW, "TimeInQueue.ScenarioInstanceJoinNow")
+	RegisterEventHandler(SystemData.Events.INTERACT_GROUP_JOIN_SCENARIO_QUEUE, "TimeInQueue.InteractGroupJoinScenarioQueue")
+	RegisterEventHandler(SystemData.Events.INTERACT_JOIN_SCENARIO_QUEUE, "TimeInQueue.InteractJoinScenarioQueue")
+	--RegisterEventHandler(SystemData.Events.INTERACT_REJOIN_SCENARIO_QUEUE, "TimeInQueue.InteractReJoinScenarioQueue")
+	if not TimeInQueue.Scenarios then
+		TimeInQueue.Scenarios = {}
+	end
 end
 
-function TimeInQueue.OnJoinLeaveCancel()
-	TimeInQueue.Scenarios = {}
+function TimeInQueue.OnUpdate(elapsedTime)
+	local queueData = GetScenarioQueueData()
+	if (queueData == nil) then
+		TimeInQueue.Scenarios = {}
+		return
+	end
+	local queueCount = queueData.totalQueuedScenarios
+	for index = 1, queueCount do
+		if TimeInQueue.Scenarios[queueData[index].id] == nil then
+			TimeInQueue.Scenarios[queueData[index].id] = { Time = GetGameTime() }
+		end
+	end	
 end
 
-function TimeInQueue.OnJoinScenarioQueue()
-	TimeInQueue.Scenarios[GameData.ScenarioQueueData.selectedId] = { Time = GetGameTime() }
+function TimeInQueue.InteractJoinScenarioQueue()
+	TimeInQueue.SetScenario(GameData.ScenarioQueueData.selectedId)
 end
 
-function TimeInQueue.OnLeaveScenarioQueue()
+-- function TimeInQueue.InteractReJoinScenarioQueue()
+-- 	--TimeInQueue.SetScenario(GameData.ScenarioQueueData.selectedId)
+-- 	-- nothing yet
+-- end
+
+function TimeInQueue.InteractLeaveScenarioQueue()	
 	if TimeInQueue.Scenarios[GameData.ScenarioQueueData.selectedId] ~= nil then
 		TimeInQueue.Scenarios[GameData.ScenarioQueueData.selectedId].Time = 0
 	end
 end
 
+function TimeInQueue.ScenarioInstanceCancel()	
+	TimeInQueue.ResetScenarios()
+end
+
+function TimeInQueue.ScenarioInstanceJoinNow()	
+	TimeInQueue.ResetScenarios()
+end
+
+function TimeInQueue.InteractGroupJoinScenarioQueue()	
+	-- nothing yet
+end
+
+function TimeInQueue.SetScenario(selectedId)
+	TimeInQueue.Scenarios[selectedId] = { Time = GetGameTime() }
+end
+
+function TimeInQueue.ResetScenarios()
+	TimeInQueue.Scenarios = {}
+end
+
 function TimeInQueue.OnMouseoverScenarioQueue()
 	Tooltips.CreateTextOnlyTooltip(SystemData.ActiveWindow.name, nil) 
+	Tooltips.SetUpdateCallback(TimeInQueue.GetScenarioQueueData)
+end
+
+function TimeInQueue.GetScenarioQueueData()
 	local queueData = GetScenarioQueueData()
 	local row = 1
 	local column = 1
-	if(queueData ~= nil) then
+	if (queueData ~= nil) then
 		Tooltips.SetTooltipText(row, column, GetString(StringTables.Default.LABEL_SCENARIO_QUEUE_CURRENT_QUEUE))
 		local queueCount = queueData.totalQueuedScenarios
 		for index = 1, queueCount do
@@ -65,10 +105,10 @@ end
 
 function TimeInQueue.Shutdown()
 	EA_Window_OverheadMap.OnMouseoverScenarioQueue = oldOnMouseoverScenarioQueue
-	UnRegisterEventHandler(SystemData.Events.SCENARIO_INSTANCE_CANCEL, "TimeInQueue.OnJoinLeaveCancel")
-	UnRegisterEventHandler(SystemData.Events.INTERACT_LEAVE_SCENARIO_QUEUE, "TimeInQueue.OnJoinLeaveCancel")
-	UnRegisterEventHandler(SystemData.Events.SCENARIO_INSTANCE_JOIN_NOW, "TimeInQueue.OnJoinLeaveCancel")
-	UnRegisterEventHandler(SystemData.Events.INTERACT_GROUP_JOIN_SCENARIO_QUEUE, "TimeInQueue.OnJoinScenarioQueue")
-	UnRegisterEventHandler(SystemData.Events.INTERACT_JOIN_SCENARIO_QUEUE, "TimeInQueue.OnJoinScenarioQueue")
-	UnRegisterEventHandler(SystemData.Events.INTERACT_LEAVE_SCENARIO_QUEUE, "TimeInQueue.OnLeaveScenarioQueue")
+	UnRegisterEventHandler(SystemData.Events.SCENARIO_INSTANCE_CANCEL, "TimeInQueue.ScenarioInstanceCancel")
+	UnRegisterEventHandler(SystemData.Events.INTERACT_LEAVE_SCENARIO_QUEUE, "TimeInQueue.InteractLeaveScenarioQueue")
+	UnRegisterEventHandler(SystemData.Events.SCENARIO_INSTANCE_JOIN_NOW, "TimeInQueue.ScenarioInstanceJoinNow")
+	UnRegisterEventHandler(SystemData.Events.INTERACT_GROUP_JOIN_SCENARIO_QUEUE, "TimeInQueue.InteractGroupJoinScenarioQueue")
+	UnRegisterEventHandler(SystemData.Events.INTERACT_JOIN_SCENARIO_QUEUE, "TimeInQueue.InteractJoinScenarioQueue")
+	--UnRegisterEventHandler(SystemData.Events.INTERACT_REJOIN_SCENARIO_QUEUE, "TimeInQueue.InteractReJoinScenarioQueue")
 end
