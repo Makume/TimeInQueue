@@ -13,7 +13,6 @@ function TimeInQueue.OnInitialize()
 	RegisterEventHandler(SystemData.Events.SCENARIO_INSTANCE_JOIN_NOW, "TimeInQueue.ScenarioInstanceJoinNow")
 	RegisterEventHandler(SystemData.Events.INTERACT_GROUP_JOIN_SCENARIO_QUEUE, "TimeInQueue.InteractGroupJoinScenarioQueue")
 	RegisterEventHandler(SystemData.Events.INTERACT_JOIN_SCENARIO_QUEUE, "TimeInQueue.InteractJoinScenarioQueue")
-	--RegisterEventHandler(SystemData.Events.INTERACT_REJOIN_SCENARIO_QUEUE, "TimeInQueue.InteractReJoinScenarioQueue")
 	if not TimeInQueue.Scenarios then
 		TimeInQueue.Scenarios = {}
 	end
@@ -36,11 +35,6 @@ end
 function TimeInQueue.InteractJoinScenarioQueue()
 	TimeInQueue.SetScenario(GameData.ScenarioQueueData.selectedId)
 end
-
--- function TimeInQueue.InteractReJoinScenarioQueue()
--- 	--TimeInQueue.SetScenario(GameData.ScenarioQueueData.selectedId)
--- 	-- nothing yet
--- end
 
 function TimeInQueue.InteractLeaveScenarioQueue()	
 	if TimeInQueue.Scenarios[GameData.ScenarioQueueData.selectedId] ~= nil then
@@ -110,5 +104,4 @@ function TimeInQueue.Shutdown()
 	UnRegisterEventHandler(SystemData.Events.SCENARIO_INSTANCE_JOIN_NOW, "TimeInQueue.ScenarioInstanceJoinNow")
 	UnRegisterEventHandler(SystemData.Events.INTERACT_GROUP_JOIN_SCENARIO_QUEUE, "TimeInQueue.InteractGroupJoinScenarioQueue")
 	UnRegisterEventHandler(SystemData.Events.INTERACT_JOIN_SCENARIO_QUEUE, "TimeInQueue.InteractJoinScenarioQueue")
-	--UnRegisterEventHandler(SystemData.Events.INTERACT_REJOIN_SCENARIO_QUEUE, "TimeInQueue.InteractReJoinScenarioQueue")
 end

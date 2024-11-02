@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ModuleFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<UiMod name="TimeInQueue" version="1.0.0" date="08/06/2024">
+	<UiMod name="TimeInQueue" version="1.1.0" date="02/11/2024">
 		<Author name="Psychoxell (Adeptha)" email="" />
 		<Description text="See how long you have been in scenario queue for" />
 		<Files>
